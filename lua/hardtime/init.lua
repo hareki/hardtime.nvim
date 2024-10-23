@@ -4,6 +4,7 @@ local last_time = util.get_time()
 local key_count = 0
 local last_keys = ""
 local last_key = ""
+local last_key_pressed_time = 0
 local mappings
 local timer = nil
 
@@ -223,6 +224,16 @@ function M.setup(user_config)
       if key == "<MouseMove>" then
          return
       end
+
+      local current_key_pressed_time = vim.loop.hrtime() -- Current time in nanoseconds
+      -- If the same key is pressed in less than 10 milliseconds, it probably comes from which-key key re-feeding mechanism
+      -- Not new key input from the user => ignore
+      if key == last_key then
+         if (current_key_pressed_time - last_key_pressed_time) < 10 * 1e6 then
+            return
+         end
+      end
+      last_key_pressed_time = current_key_pressed_time
 
       if k == "<" then
          key = "<"
