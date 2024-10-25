@@ -7,6 +7,7 @@ local last_key = ""
 local last_key_pressed_time = 0
 local mappings
 local timer = nil
+local ten_ms_in_ns = 10 * 1e6
 
 local config = require("hardtime.config").config
 
@@ -135,6 +136,21 @@ local function get_max_keys_size()
    return max_len
 end
 
+local function get_non_refed_keys(current_keys, coming_keys)
+   local max_match_len = 0
+
+   for i = 1, #coming_keys do
+      local prefix = coming_keys:sub(1, i)
+      local suffix = current_keys:sub(#current_keys - i + 1, #current_keys)
+      if prefix == suffix then
+         max_match_len = i
+      end
+   end
+
+   local output = coming_keys:sub(max_match_len + 1)
+   return output
+end
+
 local M = {}
 M.is_plugin_enabled = false
 
@@ -225,18 +241,26 @@ function M.setup(user_config)
          return
       end
 
-      local current_key_pressed_time = vim.loop.hrtime() -- Current time in nanoseconds
-      -- If the same key is pressed in less than 10 milliseconds, it probably comes from which-key key re-feeding mechanism
-      -- Not new key input from the user => ignore
-      if key == last_key then
-         if (current_key_pressed_time - last_key_pressed_time) < 10 * 1e6 then
-            return
-         end
-      end
-      last_key_pressed_time = current_key_pressed_time
-
       if k == "<" then
          key = "<"
+      end
+
+      local current_key_pressed_time = vim.loop.hrtime()
+      local time_diff = current_key_pressed_time - last_key_pressed_time
+      last_key_pressed_time = current_key_pressed_time
+
+      -- Short operation mode: which-key.nvim instantly re-feeds the key
+      if time_diff < ten_ms_in_ns then
+         return
+      end
+
+      -- Long operation pending mode: there's a chance that keys which-key.nvim provides are new
+      -- Normally happens when you press them fast enough so which-key.nvim doesn't consume the entire key sequence to show the hint
+      if #key > 1 then
+         key = get_non_refed_keys(last_keys, key)
+         if key == "" then
+            return
+         end
       end
 
       last_keys = last_keys .. key
