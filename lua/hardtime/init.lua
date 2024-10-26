@@ -223,11 +223,26 @@ function M.setup(user_config)
       })
    end
 
+   -- Precompute stuff
    local max_keys_size = get_max_keys_size()
+   for pattern, hint in pairs(config.hints) do
+      hint._len = hint.length or #pattern
+   end
 
    vim.on_key(function(_, k)
+      -- Early returns
+      if
+         k == ""
+         or not config.hint
+         or not M.is_plugin_enabled
+         or should_disable()
+      then
+         return
+      end
+
+      -- Returns based on mode checks
       local mode = vim.fn.mode()
-      if k == "" or mode == "c" or mode == "R" then
+      if mode == "c" or mode == "R" then
          return
       end
 
@@ -236,15 +251,18 @@ function M.setup(user_config)
          return
       end
 
+      -- Returns based on checking transformed key
       local key = vim.fn.keytrans(k)
       if key == "<MouseMove>" then
          return
       end
 
+      -- Fix "<" detection
       if k == "<" then
          key = "<"
       end
 
+      -- Handle which-key.nvim re-feeding keys
       local current_key_pressed_time = vim.loop.hrtime()
       local time_diff = current_key_pressed_time - last_key_pressed_time
       last_key_pressed_time = current_key_pressed_time
@@ -266,16 +284,14 @@ function M.setup(user_config)
       last_keys = last_keys .. key
       last_key = key
 
+      -- Truncate last_keys if it exceeds max_keys_size
       if #last_keys > max_keys_size then
          last_keys = last_keys:sub(-max_keys_size)
       end
 
-      if not config.hint or not M.is_plugin_enabled or should_disable() then
-         return
-      end
-
+      -- If all checks passed, process the hints
       for pattern, hint in pairs(config.hints) do
-         local len = hint.length or #pattern
+         local len = hint._len
          local found = string.find(last_keys, pattern, -len)
          if found then
             local keys = string.sub(last_keys, found, #last_keys)
