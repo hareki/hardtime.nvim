@@ -312,46 +312,47 @@ M.config = {
          end,
          length = 6,
       },
-      ["[vV][tTfF].[dcy=<>]"] = {
-         message = function(keys)
-            return "Use "
-               .. keys:sub(4, 4)
-               .. keys:sub(2, 3)
-               .. " instead of "
-               .. keys
-         end,
-         length = 4,
-      },
-      ['[vV][tTfF].".[dy]'] = {
-         message = function(keys)
-            return "Use "
-               .. keys:sub(4, 6)
-               .. keys:sub(2, 3)
-               .. " instead of "
-               .. keys
-         end,
-         length = 6,
-      },
-      ["[vV][ia][\"'`{}%[%]()<>bBwWspt][dcy=<>]"] = {
-         message = function(keys)
-            return "Use "
-               .. keys:sub(4, 4)
-               .. keys:sub(2, 3)
-               .. " instead of "
-               .. keys
-         end,
-         length = 4,
-      },
-      ['[vV][ia]["\'`{}%[%]()<>bBwWspt]".[dy]'] = {
-         message = function(keys)
-            return "Use "
-               .. keys:sub(4, 6)
-               .. keys:sub(2, 3)
-               .. " instead of "
-               .. keys
-         end,
-         length = 6,
-      },
+      -- I want to make sure the motion is correct before applying them
+      -- ["[vV][tTfF].[dcy=<>]"] = {
+      --    message = function(keys)
+      --       return "Use "
+      --          .. keys:sub(4, 4)
+      --          .. keys:sub(2, 3)
+      --          .. " instead of "
+      --          .. keys
+      --    end,
+      --    length = 4,
+      -- },
+      -- ['[vV][tTfF].".[dy]'] = {
+      --    message = function(keys)
+      --       return "Use "
+      --          .. keys:sub(4, 6)
+      --          .. keys:sub(2, 3)
+      --          .. " instead of "
+      --          .. keys
+      --    end,
+      --    length = 6,
+      -- },
+      -- ["[vV][ia][\"'`{}%[%]()<>bBwWspt][dcy=<>]"] = {
+      --    message = function(keys)
+      --       return "Use "
+      --          .. keys:sub(4, 4)
+      --          .. keys:sub(2, 3)
+      --          .. " instead of "
+      --          .. keys
+      --    end,
+      --    length = 4,
+      -- },
+      -- ['[vV][ia]["\'`{}%[%]()<>bBwWspt]".[dy]'] = {
+      --    message = function(keys)
+      --       return "Use "
+      --          .. keys:sub(4, 6)
+      --          .. keys:sub(2, 3)
+      --          .. " instead of "
+      --          .. keys
+      --    end,
+      --    length = 6,
+      -- },
    },
    ---@type function
    callback = function(text)
