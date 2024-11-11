@@ -220,7 +220,8 @@ M.config = {
          end,
          length = 6,
       },
-      ["VG[dcy=<>]"] = {
+      -- ["VG[dcy=<>]"] = {
+      ["[^g][^g]VG[dcy=<>]"] = {
          message = function(keys)
             return "Use " .. keys:sub(3, 3) .. "G instead of " .. keys
          end,
