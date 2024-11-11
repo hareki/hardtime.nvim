@@ -220,16 +220,11 @@ M.config = {
          end,
          length = 6,
       },
-      -- ["VG[dcy=<>]"] = {
-      -- This will make the hint not to be triggered for something like "yigVGd", but I haven't found a way to detect 2 g's in a row yet
-      ["[^g]VG[dcy=<>]"] = {
+      ["VG[dcy=<>]"] = {
          message = function(keys)
-            return "Use "
-               .. keys:sub(4, 4)
-               .. "G instead of "
-               .. keys.sub(2, #keys)
+            return "Use " .. keys:sub(3, 3) .. "G instead of " .. keys
          end,
-         length = 4,
+         length = 3,
       },
       ['VG".[dy]'] = {
          message = function(keys)

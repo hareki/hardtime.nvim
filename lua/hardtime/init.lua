@@ -223,11 +223,20 @@ function M.setup(user_config)
       })
    end
 
-   -- Precompute stuff
    local max_keys_size = get_max_keys_size()
+
+   -- Convert hints into a list to be able to sort them
+   local hints_list = {}
    for pattern, hint in pairs(config.hints) do
+      hint.pattern = pattern
       hint._len = hint.length or #pattern
+      table.insert(hints_list, hint)
    end
+
+   -- Prioritize longer patterns
+   table.sort(hints_list, function(a, b)
+      return a._len > b._len
+   end)
 
    vim.on_key(function(_, k)
       -- Early returns
@@ -290,13 +299,16 @@ function M.setup(user_config)
       end
 
       -- If all checks passed, process the hints
-      for pattern, hint in pairs(config.hints) do
+      -- Process hints in order and stop after the first match
+      for _, hint in ipairs(hints_list) do
          local len = hint._len
+         local pattern = hint.pattern
          local found = string.find(last_keys, pattern, -len)
          if found then
             local keys = string.sub(last_keys, found, #last_keys)
             local text = hint.message(keys)
             util.notify(text)
+            break
          end
       end
    end)
