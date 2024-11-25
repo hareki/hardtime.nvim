@@ -67,7 +67,6 @@ M.config = {
       ["<Right>"] = { "", "i" },
    },
    disabled_filetypes = {
-      "NvimTree",
       "TelescopePrompt",
       "aerial",
       "alpha",
@@ -79,7 +78,6 @@ M.config = {
       "httpResult",
       "lazy",
       "lspinfo",
-      "Neogit*",
       "mason",
       "neotest%-summary",
       "minifiles",
@@ -90,11 +88,10 @@ M.config = {
       "prompt",
       "qf",
       "query",
-      "oil",
       "undotree",
       "trouble",
       "Trouble",
-      "fugitive",
+      "snacks_notif_history",
    },
    hints = {
       ["[kj][%^_]"] = {
